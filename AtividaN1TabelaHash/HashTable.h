@@ -1,95 +1,68 @@
 #ifndef HASHTABLE_H
 #define HASHTABLE_H
 
-#ifndef TABLE_SIZE
-#define TABLE_SIZE 2      
-#endif
+#include <stdio.h>
+#include <stdlib.h>
+#include "Aluno.h"
 
-#ifndef MAX_NOME
-#define MAX_NOME 100      
+#ifndef TABLE_SIZE
+#define TABLE_SIZE 2
 #endif
 
 typedef struct Node {
     Aluno data;
-    struct Node* next;
+    struct Node* prox;
 } Node;
 
 typedef struct {
-    Node* buckets[TABLE_SIZE];
+    Node* tabela[TABLE_SIZE];   
 } HashTable;
 
-void setAluno(Aluno* a, long int mat, const char* nome) {
-    if (!a) return;
-    a->matricula = mat;
-    strncpy(a->nome, nome ? nome : "", sizeof(a->nome) - 1);
-    a->nome[sizeof(a->nome) - 1] = '\0';
-}
-
-int hashFunction(long int mat) {
+static inline int hashFunction(long int mat) {
     if (mat < 0) mat = -mat;
     return (int)(mat % TABLE_SIZE);
 }
 
-void initHashTable(HashTable* ht) {
+static inline void initHashTable(HashTable* ht) {
     if (!ht) return;
     for (int i = 0; i < TABLE_SIZE; ++i)
-        ht->buckets[i] = NULL;
+        ht->tabela[i] = NULL;
 }
 
-void insertItem(HashTable* ht, Aluno* aluno) {
+static inline void insertItem(HashTable* ht, Aluno* aluno) {
     if (!ht || !aluno) return;
     int idx = hashFunction(aluno->matricula);
-    Node* curr = ht->buckets[idx];
-
-    for (Node* p = curr; p; p = p->next) {
-        if (p->data.matricula == aluno->matricula) {
-            p->data = *aluno; 
-            return;
-        }
-    }
-
     Node* novo = (Node*)malloc(sizeof(Node));
-    if (!novo) {
-        fprintf(stderr, "Falha ao alocar memoria para Node.\n");
-        return;
-    }
-    novo->data = *aluno; 
-    novo->next = ht->buckets[idx];
-    ht->buckets[idx] = novo;
+    if (!novo) return;
+    novo->data = *aluno;             // copia nome + matrícula
+    novo->prox = ht->tabela[idx];
+    ht->tabela[idx] = novo;
 }
 
-void deleteItem(HashTable* ht, Aluno* aluno) {
+static inline void deleteItem(HashTable* ht, Aluno* aluno) {
     if (!ht || !aluno) return;
     int idx = hashFunction(aluno->matricula);
-    Node* curr = ht->buckets[idx];
-    Node* prev = NULL;
+    Node *cur = ht->tabela[idx], *prev = NULL;
 
-    while (curr) {
-        if (curr->data.matricula == aluno->matricula) {
-            if (prev) prev->next = curr->next;
-            else ht->buckets[idx] = curr->next;
-            free(curr);
+    while (cur) {
+        if (cur->data.matricula == aluno->matricula) {
+            if (prev) prev->prox = cur->prox;
+            else ht->tabela[idx] = cur->prox;
+            free(cur);
             return;
         }
-        prev = curr;
-        curr = curr->next;
+        prev = cur;
+        cur = cur->prox;
     }
 }
 
-void displayHashTable(HashTable* ht) {
+static inline void displayHashTable(HashTable* ht) {
     if (!ht) return;
+    printf("\nTabela Hash:\n");
     for (int i = 0; i < TABLE_SIZE; ++i) {
-        printf("[%d] ", i);
-        Node* p = ht->buckets[i];
-        if (!p) {
-            printf("∅\n");
-            continue;
-        }
-        while (p) {
-            printf("(%ld, %s)", p->data.matricula, p->data.nome);
-            if (p->next) printf(" -> ");
-            p = p->next;
-        }
+        printf("%d", i);
+        for (Node* n = ht->tabela[i]; n; n = n->prox)
+            printf(" -> [%ld, %s]", n->data.matricula, n->data.nome);
         printf("\n");
     }
 }
