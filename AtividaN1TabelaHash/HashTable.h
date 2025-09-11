@@ -34,13 +34,13 @@ static inline void insertItem(HashTable* ht, Aluno* aluno) {
     int idx = hashFunction(aluno->matricula);
     Node* novo = (Node*)malloc(sizeof(Node));
     if (!novo) return;
-    novo->data = *aluno;             // copia nome + matrícula
+    novo->data = *aluno;            
     novo->prox = ht->tabela[idx];
     ht->tabela[idx] = novo;
 }
 
 static inline void deleteItem(HashTable* ht, Aluno* aluno) {
-    if (!ht || !aluno) return;
+    if (!ht && !aluno) return;
     int idx = hashFunction(aluno->matricula);
     Node *cur = ht->tabela[idx], *prev = NULL;
 

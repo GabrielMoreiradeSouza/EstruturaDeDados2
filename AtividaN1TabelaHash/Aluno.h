@@ -25,4 +25,4 @@ static inline void setAluno(Aluno* a, long int mat, const char* nome) {
     }
 }
 
-#endif // ALUNO_H
+#endif 
