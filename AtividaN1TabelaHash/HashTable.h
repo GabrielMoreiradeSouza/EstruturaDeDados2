@@ -40,7 +40,7 @@ void insertItem(HashTable* ht, Aluno* aluno) {
 }
 
 void deleteItem(HashTable* ht, Aluno* aluno) {
-    if (!ht && !aluno) return;
+    if (!ht || !aluno) return;
     int idx = hashFunction(aluno->matricula);
     Node *cur = ht->tabela[idx], *prev = NULL;
 
