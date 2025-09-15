@@ -25,6 +25,5 @@ int main() {
     displayHashTable(&ht);
     deleteItem(&ht, &aluno);
     displayHashTable(&ht);
-
     return 0;
 }

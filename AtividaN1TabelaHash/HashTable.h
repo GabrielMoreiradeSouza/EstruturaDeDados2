@@ -18,18 +18,18 @@ typedef struct {
     Node* tabela[TABLE_SIZE];   
 } HashTable;
 
-static inline int hashFunction(long int mat) {
+int hashFunction(long int mat) {
     if (mat < 0) mat = -mat;
     return (int)(mat % TABLE_SIZE);
 }
 
-static inline void initHashTable(HashTable* ht) {
+void initHashTable(HashTable* ht) {
     if (!ht) return;
     for (int i = 0; i < TABLE_SIZE; ++i)
         ht->tabela[i] = NULL;
 }
 
-static inline void insertItem(HashTable* ht, Aluno* aluno) {
+void insertItem(HashTable* ht, Aluno* aluno) {
     if (!ht || !aluno) return;
     int idx = hashFunction(aluno->matricula);
     Node* novo = (Node*)malloc(sizeof(Node));
@@ -39,7 +39,7 @@ static inline void insertItem(HashTable* ht, Aluno* aluno) {
     ht->tabela[idx] = novo;
 }
 
-static inline void deleteItem(HashTable* ht, Aluno* aluno) {
+void deleteItem(HashTable* ht, Aluno* aluno) {
     if (!ht && !aluno) return;
     int idx = hashFunction(aluno->matricula);
     Node *cur = ht->tabela[idx], *prev = NULL;
@@ -56,7 +56,7 @@ static inline void deleteItem(HashTable* ht, Aluno* aluno) {
     }
 }
 
-static inline void displayHashTable(HashTable* ht) {
+void displayHashTable(HashTable* ht) {
     if (!ht) return;
     printf("\nTabela Hash:\n");
     for (int i = 0; i < TABLE_SIZE; ++i) {

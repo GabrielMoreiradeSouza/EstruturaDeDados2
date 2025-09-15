@@ -14,7 +14,7 @@ typedef struct {
     char nome[MAX_NOME];
 } Aluno;
 
-static inline void setAluno(Aluno* a, long int mat, const char* nome) {
+void setAluno(Aluno* a, long int mat, const char* nome) {
     if (!a) return;
     a->matricula = mat;
     if (nome) {
